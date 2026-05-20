@@ -1,0 +1,87 @@
+╔══════════════════════════════════════════════════════════════╗
+║             ANIMANGA LIST · PERSONAL ARCHIVE                ║
+║        2025–26 · Curated by Gaurav · Assam, India           ║
+╚══════════════════════════════════════════════════════════════╝
+
+
+▸  BRIEF INTRO  —  https://gaurav-kun.github.io/animanga-archive/Brief_Intro.html
+▸  MAIN SITE    —  https://gaurav-kun.github.io/animanga-archive/
+▸  SOURCE REPO  —  https://github.com/Gaurav-kun/animanga-archive
+
+
+────────────────────────────────────────────────────────────
+  WHAT IT IS
+────────────────────────────────────────────────────────────
+
+A personal, hand-curated archive tracking every anime, manga,
+and manhwa I watched or read in 2025–26. No algorithms. No
+filler. Just my genuine picks — rated, tagged, and linkable.
+
+Features:
+  •  Daily picks (random anime/manga/manhwa of the day)
+  •  Favorites system with export-to-text
+  •  Real-time search & multi-genre filtering
+  •  Sort by rating, year, title
+  •  Grid / list view toggle
+  •  Keyboard shortcuts (1/2/3 → jump sections, F → favs, D → dojo)
+  •  Sound effects (Web Audio API — sword clicks & chimes)
+  •  LocalStorage persistence (entries, favorites, progress)
+  •  "Add Entry" form (saves forever to localStorage)
+
+
+────────────────────────────────────────────────────────────
+  CODE STRUCTURE
+────────────────────────────────────────────────────────────
+
+  ├── index.html           Main archive page (300 lines)
+  ├── Brief_Intro.html     Intro slideshow / about page (1028 lines)
+  ├── css/
+  │   └── style.css        All styles, themes, animations
+  ├── js/
+  │   ├── data.js          All anime/manga/manhwa entries
+  │   └── app.js           Logic, rendering, interactivity
+  └── ABOUT.txt            This file
+
+
+────────────────────────────────────────────────────────────
+  TECH STACK
+────────────────────────────────────────────────────────────
+
+  •  Pure HTML5 / CSS3 (Custom Properties)
+  •  Vanilla JavaScript — zero frameworks, zero bundlers
+  •  Three.js r128 — 3D katana scene in background
+  •  Canvas API — rain overlay, particle systems
+  •  Web Audio API — custom sound engine
+  •  Intersection Observer — scroll-triggered reveals
+  •  CSS Scroll Snap — slide navigation
+  •  LocalStorage — persistent data without a backend
+  •  Google Fonts — Cinzel, Cormorant Garamond, Noto Serif JP
+  •  GitHub Pages — free hosting
+
+
+────────────────────────────────────────────────────────────
+  VISUAL IDENTITY
+────────────────────────────────────────────────────────────
+
+  Theme  : Night Dojo — dark samurai aesthetic
+  Colors : Crimson (#cc1433) · Gold (#c8a032) · Deep Ink (#02020c)
+  Vibe   : Musashi's "Book of Five Rings" — discipline, craft, intent
+
+  Details:
+  •  3D rotating katana with particle dust
+  •  Golden rain overlay
+  •  Drifting kanji characters
+  •  Click particle burst (crimson sparks)
+  •  Floating ember particles
+  •  Dawn / Night dojo mode toggle
+  •  Ink-blot loader sequence
+
+
+────────────────────────────────────────────────────────────
+  CURATED BY GAURAV
+────────────────────────────────────────────────────────────
+
+  Built with obsession, craft, and zero frameworks.
+  Assam, India · BCA Student · Musashi's discipline.
+
+  ⚔  No filler. No algorithms. Just peak.  ⚔

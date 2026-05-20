@@ -8,7 +8,7 @@ A beautifully crafted personal archive for tracking **Anime**, **Manga**, and **
 
 ## 🌐 Live Demo
 
-🔗 **[View Live Site → ](https://YOUR-USERNAME.github.io/animanga-archive/)**
+🔗 **[View Live Site → ](https://gaurav-kun.github.io/animanga-archive/)**
 
 > Replace with your actual GitHub Pages URL after deployment.
 

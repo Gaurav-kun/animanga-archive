@@ -10,7 +10,6 @@ A beautifully crafted personal archive for tracking **Anime**, **Manga**, and **
 
 🔗 **[View Live Site → ](https://gaurav-kun.github.io/animanga-archive/)**
 
-> Replace with your actual GitHub Pages URL after deployment.
 
 ---
 

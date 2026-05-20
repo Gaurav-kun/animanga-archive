@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AniManga List 2025-26 — Personal Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,700&family=Noto+Serif+JP:wght@300;400;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-ink"></div>
+  <div class="l-ink2"></div>
+  <div class="l-content">
+    <div class="l-title">ANIMANGA LIST</div>
+    <div class="l-sub">// PERSONAL ARCHIVE · 2025-26 \\</div>
+    <div class="l-bar"></div>
+  </div>
+</div>
+
+<canvas id="threeCanvas"></canvas>
+<canvas id="bgCanvas"></canvas>
+<canvas id="kanjiCanvas"></canvas>
+<canvas id="rainCanvas"></canvas>
+<div id="pbar"></div>
+
+<!-- DAILY PICKS MODAL -->
+<div id="modal">
+  <div class="m-overlay" onclick="closeModal()"></div>
+  <div class="m-box">
+    <div class="m-head"><span class="m-htitle">⚔️ Daily Picks — Chosen for Today</span><button class="m-close" onclick="closeModal()">×</button></div>
+    <div class="m-body">
+      <div class="m-tabs">
+        <button class="mtab on" onclick="switchTab(this,'m-anime')">Anime Pick</button>
+        <button class="mtab" onclick="switchTab(this,'m-manga')">Manga Pick</button>
+        <button class="mtab" onclick="switchTab(this,'m-manhwa')">Manhwa Pick</button>
+      </div>
+      <div id="m-anime" class="mpanel on"></div>
+      <div id="m-manga" class="mpanel"></div>
+      <div id="m-manhwa" class="mpanel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAVORITES MODAL -->
+<div id="favs-modal">
+  <div class="m-overlay" onclick="closeFavsPanel()"></div>
+  <div class="m-box">
+    <div class="m-head">
+      <span class="m-htitle">❤️ MY FAVORITES ARCHIVE</span>
+      <div class="m-head-actions">
+        <button class="favs-export-btn" onclick="exportFavorites()">📋 EXPORT LIST</button>
+        <button class="m-close" onclick="closeFavsPanel()">×</button>
+      </div>
+    </div>
+    <div class="m-body"><div class="favs-grid" id="favsGrid"></div></div>
+  </div>
+</div>
+
+<!-- KEYBOARD GUIDE -->
+<div id="key-guide">
+  <div class="kg-title"><span>⌨️ SHORTCUTS</span><button class="kg-close" onclick="toggleKeyGuide()">×</button></div>
+  <div class="kg-item"><span class="kg-desc">Keyboard Guide</span><span class="kg-key">?</span></div>
+  <div class="kg-item"><span class="kg-desc">Jump to Anime</span><span class="kg-key">1</span></div>
+  <div class="kg-item"><span class="kg-desc">Jump to Manga</span><span class="kg-key">2</span></div>
+  <div class="kg-item"><span class="kg-desc">Jump to Manhwa</span><span class="kg-key">3</span></div>
+  <div class="kg-item"><span class="kg-desc">Prev Quote</span><span class="kg-key">←</span></div>
+  <div class="kg-item"><span class="kg-desc">Next Quote</span><span class="kg-key">→</span></div>
+  <div class="kg-item"><span class="kg-desc">Dojo Mode</span><span class="kg-key">D</span></div>
+  <div class="kg-item"><span class="kg-desc">My Favorites</span><span class="kg-key">F</span></div>
+  <div class="kg-item"><span class="kg-desc">Close / Dismiss</span><span class="kg-key">Esc</span></div>
+  <div class="kg-item"><span class="kg-desc">Toggle Sound</span><span class="kg-key">M</span></div>
+</div>
+
+<!-- SECTION DOTS -->
+<div class="sect-dots">
+  <button class="sdot active" data-target-id="" data-label="TOP"></button>
+  <button class="sdot" data-target-id="featured" data-label="TODAY"></button>
+  <button class="sdot" data-target-id="anime" data-label="ANIME"></button>
+  <button class="sdot" data-target-id="manga" data-label="MANGA"></button>
+  <button class="sdot" data-target-id="manhwa" data-label="MANHWA"></button>
+  <button class="sdot" data-target-id="add" data-label="ADD"></button>
+  <button class="sdot" data-target-id="about" data-label="ABOUT"></button>
+</div>
+
+<!-- MOBILE -->
+<div class="mob-overlay" id="mobOverlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#anime" onclick="toggleMobileMenu()">Anime</a>
+  <a href="#manga" onclick="toggleMobileMenu()">Manga</a>
+  <a href="#manhwa" onclick="toggleMobileMenu()">Manhwa</a>
+  <a href="#featured" onclick="toggleMobileMenu()">Today's Picks</a>
+  <a href="#add" onclick="toggleMobileMenu()">Add Entry</a>
+  <a href="#about" onclick="toggleMobileMenu()">About</a>
+  <hr>
+  <a href="https://everythingmoe.com/" target="_blank" rel="noopener">EverythingMoe</a>
+  <a href="https://animepahe.pw/" target="_blank" rel="noopener">AnimePahe</a>
+  <a href="https://comick.io/" target="_blank" rel="noopener">Comick.io</a>
+  <a href="https://anichart.net/" target="_blank" rel="noopener">AniChart</a>
+  <a href="https://myanimelist.net/" target="_blank" rel="noopener">MyAnimeList</a>
+  <hr>
+  <button class="mob-btn" onclick="openFavsPanel();toggleMobileMenu()">❤️ My Favorites</button>
+  <button class="mob-btn" onclick="openModal();toggleMobileMenu()">⚔️ Daily Popup</button>
+  <button class="mob-btn" onclick="toggleDojo();toggleMobileMenu()">🌅 Dojo Mode</button>
+  <button class="mob-btn" onclick="toggleSound();toggleMobileMenu()">🔊 Sound</button>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-in">
+    <a href="#" class="logo"><span class="logo-i">⚔️</span> GAURAV<span>.</span>ARCHIVE</a>
+    <ul class="nav-links">
+      <li><a href="#anime">Anime</a></li>
+      <li><a href="#manga">Manga</a></li>
+      <li><a href="#manhwa">Manhwa</a></li>
+      <li><a href="#featured">Today</a></li>
+      <li><a href="#about">About</a></li>
+      <li class="dropdown">
+        <button class="dropbtn">Resources ▾</button>
+        <div class="dd-menu">
+          <a href="https://everythingmoe.com/" target="_blank" rel="noopener">EverythingMoe</a>
+          <a href="https://animepahe.pw/" target="_blank" rel="noopener">AnimePahe</a>
+          <a href="https://comick.io/" target="_blank" rel="noopener">Comick.io</a>
+          <a href="https://anichart.net/" target="_blank" rel="noopener">AniChart</a>
+          <a href="https://myanimelist.net/" target="_blank" rel="noopener">MyAnimeList</a>
+        </div>
+      </li>
+    </ul>
+    <div class="nav-actions">
+      <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Toggle Sound">🔊</button>
+      <button class="favs-nav-btn" onclick="openFavsPanel()">❤️ <span id="favCountLabel">Favs</span> <span class="fav-count-badge" id="favCountBadge"></span></button>
+      <button class="kg-nav-btn" onclick="toggleKeyGuide()">⌨️</button>
+      <button class="dojo-toggle" onclick="toggleDojo()"><span class="icon">🌅</span> Dojo</button>
+      <button class="ham" id="hamBtn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-moon"></div>
+  <div class="hero-bg">武</div>
+  <div class="hero-tag">⚔️ PERSONAL VIEWING ARCHIVE · 2025-26 ⚔️</div>
+  <h1 class="hero-title"><span class="glitch" data-text="ANIMANGA LIST"><span class="hl">ANIMANGA LIST</span></span></h1>
+  <div class="hero-jp">2025 — 2026 · 鑑賞履歴</div>
+  <p class="hero-quote">"<strong>The way of the warrior is the resolute acceptance of death.</strong>"<br>— Miyamoto Musashi, 五輪書</p>
+  <div class="hero-btns">
+    <a href="#anime" class="btn btn-p">Explore Archive</a>
+    <a href="#featured" class="btn btn-s">Today's Picks ✦</a>
+    <button onclick="openModal()" class="btn btn-g">⚔️ Daily Popup</button>
+  </div>
+  <div class="scroll-hint"><div class="scroll-txt">SCROLL</div><div class="scroll-line"></div></div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-grid">
+    <div class="stat-item rev fb"><span class="stat-n" id="statAnime">0</span><span class="stat-l">Anime</span></div>
+    <div class="stat-item rev fb" style="transition-delay:.1s"><span class="stat-n" id="statManga">0</span><span class="stat-l">Manga</span></div>
+    <div class="stat-item rev fb" style="transition-delay:.2s"><span class="stat-n" id="statManhwa">0</span><span class="stat-l">Manhwa</span></div>
+    <div class="stat-item rev fb" style="transition-delay:.3s"><span class="stat-n" id="statTotal">0</span><span class="stat-l">Total Curated</span></div>
+  </div>
+</div>
+
+<!-- FEATURED -->
+<section class="featured" id="featured">
+  <div class="feat-head rev fb"><span class="sect-tag">// today's daily selection</span><h2 class="sect-h">DAILY PICKS</h2></div>
+  <div class="feat-grid">
+    <div id="fcAnime" class="rev fl"></div>
+    <div id="fcManga" class="rev fr"></div>
+  </div>
+</section>
+
+<div class="sword-div"><span class="sword-div-i">⚔️</span></div>
+
+<!-- ANIME -->
+<section class="ms" id="anime">
+  <div class="ms-con">
+    <div class="ms-top rev fb"><div><span class="sect-tag">// watch these</span><h2 class="ms-h">ANIME</h2></div>
+      <div class="ms-tools"><span class="ms-count" id="aCnt"></span><div class="view-toggle"><button class="vt-btn active" onclick="setView('grid','animeGrid')">▦</button><button class="vt-btn" onclick="setView('list','animeGrid')">≡</button></div><button class="rand-btn" onclick="randomPick('anime')">⚡ Random</button></div>
+    </div>
+    <div class="controls rev fb">
+      <div class="sw"><span class="si">⌕</span><input type="text" class="search" id="animeSearch" placeholder="Search anime..."></div>
+      <div class="filters" id="animeFilters"><button class="fb2 active" data-filter="all">All</button><button class="fb2" data-filter="action">Action</button><button class="fb2" data-filter="psychological">Psych</button><button class="fb2" data-filter="scifi">Sci-Fi</button><button class="fb2" data-filter="romance">Romance</button><button class="fb2" data-filter="fantasy">Fantasy</button><button class="fb2" data-filter="drama">Drama</button><button class="fb2" data-filter="comedy">Comedy</button><button class="fb2" data-filter="slice-of-life">SoL</button></div>
+      <select class="sort-sel" id="animeSort" onchange="setSort('anime',this.value)"><option value="default">SORT: DEFAULT</option><option value="rating-desc">RATING ↓</option><option value="rating-asc">RATING ↑</option><option value="year-desc">YEAR ↓</option><option value="year-asc">YEAR ↑</option><option value="title-az">TITLE A-Z</option><option value="title-za">TITLE Z-A</option></select>
+    </div>
+    <div class="cards" id="animeGrid"></div>
+  </div>
+</section>
+
+<div class="sword-div"><span class="sword-div-i">⚔️</span></div>
+
+<!-- MANGA -->
+<section class="ms alt" id="manga">
+  <div class="ms-con">
+    <div class="ms-top rev fb"><div><span class="sect-tag">// read these</span><h2 class="ms-h">MANGA</h2></div>
+      <div class="ms-tools"><span class="ms-count" id="mCnt"></span><div class="view-toggle"><button class="vt-btn active" onclick="setView('grid','mangaGrid')">▦</button><button class="vt-btn" onclick="setView('list','mangaGrid')">≡</button></div><button class="rand-btn" onclick="randomPick('manga')">⚡ Random</button></div>
+    </div>
+    <div class="controls rev fb">
+      <div class="sw"><span class="si">⌕</span><input type="text" class="search" id="mangaSearch" placeholder="Search manga..."></div>
+      <div class="filters" id="mangaFilters"><button class="fb2 active" data-filter="all">All</button><button class="fb2" data-filter="seinen">Seinen</button><button class="fb2" data-filter="psychological">Psych</button><button class="fb2" data-filter="historical">Historical</button><button class="fb2" data-filter="romance">Romance</button><button class="fb2" data-filter="darkfantasy">Dark Fantasy</button><button class="fb2" data-filter="action">Action</button></div>
+      <select class="sort-sel" id="mangaSort" onchange="setSort('manga',this.value)"><option value="default">SORT: DEFAULT</option><option value="rating-desc">RATING ↓</option><option value="rating-asc">RATING ↑</option><option value="year-desc">YEAR ↓</option><option value="year-asc">YEAR ↑</option><option value="title-az">TITLE A-Z</option><option value="title-za">TITLE Z-A</option></select>
+    </div>
+    <div class="cards" id="mangaGrid"></div>
+  </div>
+</section>
+
+<div class="sword-div"><span class="sword-div-i">⚔️</span></div>
+
+<!-- MANHWA -->
+<section class="ms" id="manhwa">
+  <div class="ms-con">
+    <div class="ms-top rev fb"><div><span class="sect-tag">// korean peak</span><h2 class="ms-h">MANHWA</h2></div>
+      <div class="ms-tools"><span class="ms-count" id="hwCnt"></span><div class="view-toggle"><button class="vt-btn active" onclick="setView('grid','manhwaGrid')">▦</button><button class="vt-btn" onclick="setView('list','manhwaGrid')">≡</button></div><button class="rand-btn" onclick="randomPick('manhwa')">⚡ Random</button></div>
+    </div>
+    <div class="controls rev fb">
+      <div class="sw"><span class="si">⌕</span><input type="text" class="search" id="manhwaSearch" placeholder="Search manhwa..."></div>
+      <div class="filters" id="manhwaFilters"><button class="fb2 active" data-filter="all">All</button><button class="fb2" data-filter="action">Action</button><button class="fb2" data-filter="psychological">Psych</button><button class="fb2" data-filter="horror">Horror</button><button class="fb2" data-filter="fantasy">Fantasy</button><button class="fb2" data-filter="thriller">Thriller</button></div>
+      <select class="sort-sel" id="manhwaSort" onchange="setSort('manhwa',this.value)"><option value="default">SORT: DEFAULT</option><option value="rating-desc">RATING ↓</option><option value="rating-asc">RATING ↑</option><option value="year-desc">YEAR ↓</option><option value="year-asc">YEAR ↑</option><option value="title-az">TITLE A-Z</option><option value="title-za">TITLE Z-A</option></select>
+    </div>
+    <div class="cards" id="manhwaGrid"></div>
+  </div>
+</section>
+
+<div class="sword-div"><span class="sword-div-i">⚔️</span></div>
+
+<!-- ADD ENTRY -->
+<section class="add-s" id="add">
+  <div class="ms-con">
+    <div class="rev fb" style="text-align:center;margin-bottom:2.5rem"><span class="sect-tag">// contribute</span><h2 class="ms-h" style="font-size:clamp(2rem,4vw,3rem)">ADD ENTRY</h2></div>
+    <div class="aform rev sc">
+      <div class="fg"><label class="fl2">Title</label><input class="fi" id="addTitle" placeholder="Your Lie in April"></div>
+      <div class="fg"><label class="fl2">JP / KR</label><input class="fi" id="addJp" placeholder="四月は君の嘘"></div>
+      <div class="fg"><label class="fl2">Type</label><select class="fsel" id="addType"><option>anime</option><option>manga</option><option>manhwa</option></select></div>
+      <div class="fg"><label class="fl2">Rating</label><input class="fi" type="number" id="addRating" min="1" max="5" value="5"></div>
+      <div class="fg"><label class="fl2">Description</label><textarea class="fta" id="addDesc" rows="2"></textarea></div>
+      <div class="fg"><label class="fl2">Tags</label><input class="fi" id="addTags" placeholder="action, romance"></div>
+      <div class="fg"><label class="fl2">MAL ID</label><input class="fi" id="addMalId" placeholder="12189"></div>
+      <div class="fg"><label class="fl2">Year</label><input class="fi" id="addYear" placeholder="2011"></div>
+      <div class="fg"><label class="fl2">Episodes</label><input class="fi" id="addEpisodes" placeholder="64 eps"></div>
+      <div class="fg"><label class="fl2">Status</label><select class="fsel" id="addStatus"><option value="finished">Finished</option><option value="airing">Airing</option></select></div>
+      <button class="fsub" onclick="addEntry()">+ ADD TO ARCHIVE (SAVED FOREVER)</button>
+    </div>
+  </div>
+</section>
+
+<div class="sword-div"><span class="sword-div-i">⚔️</span></div>
+
+<!-- ABOUT -->
+<section class="about-s" id="about">
+  <div class="about-grid">
+    <div class="rev fl">
+      <span class="sect-tag">// the curator</span>
+      <h2 class="ms-h" style="font-size:2.5rem">GAURAV.</h2>
+      <p style="margin:1.4rem 0;color:var(--txtm);font-size:1.1rem">My personal viewing log for <strong>2025-26</strong>. Every entry here is something I actually watched or read — curated by hand, not generated. Links to <strong>MAL, AnimePahe, and Comick</strong> so anyone can jump straight in. <strong>No filler. No algorithms. Just my journey through anime, manga, and manhwa.</strong></p>
+      <p style="color:var(--txtm)">Built solo. One file. Pure HTML/CSS/JS. Zero frameworks.</p>
+      <div class="aq-block"><p class="aq-text">"Perceive that which cannot be seen with the eye."</p><p class="aq-auth">— Miyamoto Musashi, The Book of Five Rings</p></div>
+      <div class="about-contact">
+        <p>📧 <a href="mailto:saikiag459@gmail.com">saikiag459@gmail.com</a></p>
+        <p style="margin-top:.5rem">💡 Use the form above to suggest missing masterpieces.</p>
+        <p style="margin-top:.5rem"><a href="#add">→ Contribute to the archive</a></p>
+      </div>
+    </div>
+    <div class="rev fr">
+      <div class="mq-box">
+        <div class="mq-label"><span>⚔️ Musashi's Wisdom — 五輪書 · 独行道</span><button class="mq-share-btn" onclick="shareQuote()">📋 COPY</button></div>
+        <p class="mq-text" id="mqText"></p>
+        <p class="mq-src" id="mqSrc"></p>
+        <div class="qdots" id="qdots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-inner">
+    <div class="f-logo">⚔️ GAURAV<span>.</span>ARCHIVE ⚔️</div>
+    <div class="f-links"><a href="#anime" class="f-link">Anime</a><span class="f-sep">·</span><a href="#manga" class="f-link">Manga</a><span class="f-sep">·</span><a href="#manhwa" class="f-link">Manhwa</a><span class="f-sep">·</span><a href="#featured" class="f-link">Today</a><span class="f-sep">·</span><a href="#add" class="f-link">Add</a><span class="f-sep">·</span><a href="#about" class="f-link">About</a></div>
+    <p class="f-quote">"Think lightly of yourself and deeply of the world."</p>
+    <p class="f-txt">© 2025 — PERSONAL CURATED ARCHIVE — NO FILLER — JUST PEAK</p>
+    <div class="f-bottom"><span>Built by Gaurav — Assam, India</span><span>|</span><span>BCA Student</span><span>|</span><span>Musashi's Way</span></div>
+    <div class="f-signature">ガウラブ</div>
+  </div>
+</footer>
+
+<!-- BTT -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg class="btt-svg" viewBox="0 0 52 52"><circle class="btt-track" cx="26" cy="26" r="24"/><circle class="btt-prog" id="bttProg" cx="26" cy="26" r="24" stroke-dasharray="150.8" stroke-dashoffset="150.8"/></svg>
+  <span class="btt-core">↑</span>
+</button>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

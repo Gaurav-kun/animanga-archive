@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniManga List 2025–26 | Interactive Archive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400;700&family=Noto+Serif+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson: #cc1433;
+      --crimson2: #ff2050;
+      --crimson3: #7a0b1e;
+      --gold: #c8a032;
+      --gold2: #7a6218;
+      --dark: #02020c;
+      --dark2: #05050f;
+      --surf: #07071a;
+      --surf2: #0c0c22;
+      --border: #1a1a35;
+      --txt: #ede8df;
+      --txtm: #9a9285;
+      --txtd: #45423a;
+      --ft: 'Cinzel Decorative', serif;
+      --fh: 'Cinzel', serif;
+      --fb: 'Cormorant Garamond', serif;
+      --fm: 'JetBrains Mono', monospace;
+      --fj: 'Noto Serif JP', serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--crimson) var(--dark); }
+    body {
+      font-family: var(--fb);
+      background: var(--dark);
+      color: var(--txt);
+      overflow-x: hidden;
+      cursor: default;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--crimson); border-radius: 2px; }
+
+    /* ── CANVASES ── */
+    #bgCanvas, #rainCanvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
+    }
+    #rainCanvas { opacity: 0.18; }
+
+    /* ── VIGNETTE ── */
+    .vignette {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 45%, rgba(2,2,12,0.75) 100%);
+      pointer-events: none; z-index: 1;
+    }
+
+    /* ── PROGRESS BAR ── */
+    #pbar {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0;
+      background: linear-gradient(90deg, var(--crimson), var(--gold));
+      z-index: 9999;
+      box-shadow: 0 0 10px var(--crimson);
+      transition: width 0.1s linear;
+    }
+    #pbar::after {
+      content: '⚔';
+      position: absolute; right: -12px; top: -8px;
+      font-size: 14px;
+      filter: drop-shadow(0 0 6px var(--gold));
+      animation: swordGlow 2s ease-in-out infinite;
+    }
+    @keyframes swordGlow {
+      0%,100% { filter: drop-shadow(0 0 4px var(--gold)); }
+      50% { filter: drop-shadow(0 0 14px var(--gold)) brightness(1.5); }
+    }
+
+    /* ── SLIDE SYSTEM ── */
+    .slides {
+      position: relative; z-index: 2;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      height: 100vh;
+    }
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* ── NAV DOTS ── */
+    .nav-dots {
+      position: fixed;
+      right: 1.5rem; top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .ndot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none; cursor: pointer;
+      transition: all 0.3s; padding: 0;
+      position: relative;
+    }
+    .ndot.active {
+      background: var(--crimson);
+      box-shadow: 0 0 10px var(--crimson);
+      transform: scale(1.6);
+    }
+    .ndot:hover { background: var(--crimson); transform: scale(1.3); }
+    .ndot::before {
+      content: attr(data-label);
+      position: absolute; right: calc(100% + 0.7rem); top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--fm); font-size: 0.45rem; letter-spacing: 0.18em;
+      color: var(--crimson); background: var(--surf);
+      padding: 0.15rem 0.5rem; border: 1px solid var(--crimson3);
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s; text-transform: uppercase;
+    }
+    .ndot:hover::before { opacity: 1; }
+
+    /* ── KEYBOARD HINT ── */
+    .kb-hint {
+      position: fixed; bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--fm); font-size: 0.5rem;
+      letter-spacing: 0.2em; color: var(--txtd);
+      display: flex; gap: 1.2rem; align-items: center;
+      z-index: 1000; text-transform: uppercase;
+      opacity: 0; animation: fadeIn 1s ease 3s forwards;
+    }
+    .kb-hint kbd {
+      background: var(--surf); border: 1px solid var(--border);
+      color: var(--crimson); padding: 0.1rem 0.35rem;
+      font-size: 0.48rem; font-family: var(--fm);
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* ══════════════════════════════
+       SLIDE 1 — TITLE / HERO
+    ══════════════════════════════ */
+    #slide1 {
+      background: linear-gradient(170deg, #02020c 0%, #06010e 50%, #02020c 100%);
+      overflow: hidden;
+    }
+    .s1-bg-kanji {
+      position: absolute; inset: 0;
+      font-family: var(--fj); font-size: 50vw;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(204,20,51,0.04);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; user-select: none;
+      line-height: 1; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: slowSpin 120s linear infinite;
+    }
+    @keyframes slowSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    .s1-moon {
+      position: absolute;
+      top: 6%; right: 8%;
+      width: clamp(160px, 22vw, 320px);
+      height: clamp(160px, 22vw, 320px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 55% 40%, rgba(200,20,40,0.22), rgba(180,20,35,0.08) 50%, transparent 70%);
+      box-shadow: 0 0 100px rgba(200,30,45,0.18), 0 0 220px rgba(200,20,40,0.07);
+      animation: moonPulse 7s ease-in-out infinite;
+    }
+    @keyframes moonPulse {
+      0%,100% { box-shadow: 0 0 100px rgba(200,30,45,0.18), 0 0 220px rgba(200,20,40,0.07); }
+      50% { box-shadow: 0 0 160px rgba(220,35,50,0.28), 0 0 300px rgba(200,20,40,0.14); }
+    }
+
+    .s1-content {
+      text-align: center;
+      position: relative; z-index: 2;
+      opacity: 0; animation: heroReveal 1.4s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
+    }
+    @keyframes heroReveal {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .s1-eyebrow {
+      font-family: var(--fm); font-size: 0.58rem;
+      letter-spacing: 0.5em; color: var(--crimson);
+      border: 1px solid var(--crimson3);
+      padding: 0.4rem 2rem; display: inline-block;
+      background: rgba(204,20,51,0.06);
+      margin-bottom: 2.5rem;
+      text-transform: uppercase;
+    }
+
+    .s1-title {
+      font-family: var(--ft);
+      font-size: clamp(3rem, 11vw, 7.5rem);
+      letter-spacing: 0.1em; line-height: 0.9;
+      background: linear-gradient(180deg, #ede8df 0%, #c8a032 50%, #9a7a20 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block; margin-bottom: 1rem;
+      position: relative;
+    }
+    .s1-title::after {
+      content: '';
+      position: absolute; bottom: -12px; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--crimson), var(--gold), transparent);
+      animation: lineGrow 1s ease 1.2s forwards;
+      box-shadow: 0 0 10px var(--crimson);
+    }
+    @keyframes lineGrow { to { width: 60%; } }
+
+    .s1-year {
+      font-family: var(--fh); font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--crimson); letter-spacing: 0.3em;
+      margin: 1.5rem 0 0.8rem;
+    }
+    .s1-jp {
+      font-family: var(--fj); font-size: 1rem;
+      color: var(--txtd); letter-spacing: 0.5em;
+    }
+    .s1-sub {
+      font-size: 1.2rem; font-style: italic;
+      color: var(--txtm); margin-top: 1.5rem;
+      opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
+    }
+    .s1-divider {
+      font-size: 1.5rem; letter-spacing: 0.8rem;
+      color: var(--gold); opacity: 0.5;
+      margin-top: 2.5rem;
+      opacity: 0; animation: fadeIn 1s ease 1.8s forwards;
+    }
+    .s1-scroll {
+      margin-top: 3.5rem; display: flex;
+      flex-direction: column; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeIn 1s ease 2.5s forwards;
+    }
+    .s1-scroll-txt {
+      font-family: var(--fm); font-size: 0.48rem;
+      letter-spacing: 0.3em; color: var(--txtd); writing-mode: vertical-rl;
+    }
+    .s1-scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--crimson), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(0.8); }
+    }
+
+    /* ══════════════════════════════
+       SLIDE CONTENT WRAPPER
+    ══════════════════════════════ */
+    .panel {
+      max-width: 1000px; width: 100%;
+      background: rgba(7,7,26,0.85);
+      border: 1px solid rgba(26,26,53,0.9);
+      border-top: 1px solid rgba(200,160,50,0.12);
+      border-radius: 2px;
+      padding: clamp(2rem, 5vw, 3.5rem);
+      backdrop-filter: blur(16px);
+      position: relative; overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 50px rgba(204,20,51,0.04);
+    }
+    .panel::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--crimson), var(--gold), transparent);
+      opacity: 0.5;
+    }
+    .panel::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(204,20,51,0.03), transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Section headings */
+    .sect-eyebrow {
+      font-family: var(--fm); font-size: 0.55rem;
+      letter-spacing: 0.4em; color: var(--crimson);
+      text-transform: uppercase; display: block;
+      margin-bottom: 0.7rem;
+    }
+    .sect-title {
+      font-family: var(--fh); font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--txt); margin-bottom: 2.5rem;
+      letter-spacing: 0.06em;
+      position: relative; display: inline-block;
+    }
+    .sect-title::after {
+      content: '';
+      position: absolute; bottom: -10px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--crimson), var(--gold), transparent);
+      box-shadow: 0 0 8px var(--crimson);
+      transition: width 1.2s cubic-bezier(0.23,1,0.32,1);
+    }
+    .panel.revealed .sect-title::after { width: 100%; }
+
+    /* ── GRID SYSTEMS ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.9rem; }
+
+    /* ── FEATURE CARD ── */
+    .fcard {
+      background: rgba(12,12,34,0.7);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid transparent;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+      cursor: default;
+    }
+    .fcard::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--crimson), var(--gold));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+    }
+    .fcard:hover { transform: translateY(-6px); border-color: rgba(200,160,50,0.3); box-shadow: 0 20px 50px rgba(204,20,51,0.15), 0 0 20px rgba(200,160,50,0.08); }
+    .fcard:hover::before { transform: scaleX(1); }
+
+    .fcard-icon { font-size: 2.2rem; margin-bottom: 0.9rem; display: block; filter: drop-shadow(0 0 10px rgba(200,160,50,0.35)); }
+    .fcard h3 {
+      font-family: var(--fh); font-size: 0.95rem;
+      letter-spacing: 0.08em; color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .fcard p { font-size: 0.88rem; color: var(--txtm); line-height: 1.6; }
+
+    /* ── FEATURE LIST (animated) ── */
+    .flist { list-style: none; }
+    .flist li {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgba(26,26,53,0.8);
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 1.05rem; color: var(--txtm);
+      opacity: 0; transform: translateX(-25px);
+      transition: all 0.5s ease;
+    }
+    .flist li:last-child { border-bottom: none; }
+    .flist li.visible { opacity: 1; transform: none; }
+    .flist li strong { color: var(--txt); }
+    .flist-icon {
+      font-size: 1.3rem; min-width: 2rem;
+      text-align: center;
+      filter: drop-shadow(0 0 6px rgba(204,20,51,0.5));
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-card {
+      background: rgba(12,12,34,0.7);
+      border: 1px solid var(--border);
+      padding: 2rem 1.2rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .stat-card:hover { border-color: rgba(204,20,51,0.4); box-shadow: 0 0 40px rgba(204,20,51,0.1); }
+    .stat-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(204,20,51,0.06), transparent 70%);
+    }
+    .stat-num {
+      font-family: var(--ft);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      background: linear-gradient(180deg, var(--gold) 0%, var(--crimson) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; display: block; line-height: 1;
+      filter: drop-shadow(0 0 15px rgba(200,160,50,0.2));
+    }
+    .stat-label {
+      font-family: var(--fm); font-size: 0.5rem;
+      letter-spacing: 0.28em; color: var(--txtd);
+      text-transform: uppercase; margin-top: 0.6rem; display: block;
+    }
+
+    /* ── TECH PILL ── */
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.5rem; }
+    .tech-pill {
+      font-family: var(--fm); font-size: 0.55rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      background: rgba(12,12,34,0.9);
+      border: 1px solid var(--border);
+      color: var(--txtm);
+      transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .tech-pill::before {
+      content: '◆';
+      color: var(--crimson); margin-right: 0.5rem;
+      font-size: 0.4rem; vertical-align: middle;
+    }
+    .tech-pill:hover { border-color: var(--crimson); color: var(--txt); box-shadow: 0 0 14px rgba(204,20,51,0.2); }
+
+    /* ── TYPE BADGES ── */
+    .type-showcase {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 0;
+    }
+    .type-card {
+      background: linear-gradient(135deg, rgba(12,12,34,0.9), rgba(7,7,26,0.95));
+      border: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+      text-align: center; position: relative; overflow: hidden;
+      transition: all 0.45s cubic-bezier(0.23,1,0.32,1);
+      cursor: default;
+    }
+    .type-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .type-card.anime::after { background: linear-gradient(90deg, var(--crimson), var(--crimson2)); }
+    .type-card.manga::after { background: linear-gradient(90deg, var(--gold2), var(--gold)); }
+    .type-card.manhwa::after { background: linear-gradient(90deg, #2a6abf, #4a9ae0); }
+    .type-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+    .type-kanji {
+      font-family: var(--fj); font-size: 5rem; font-weight: 700;
+      opacity: 0.12; line-height: 1;
+      transition: opacity 0.4s;
+      display: block; margin-bottom: -1rem;
+    }
+    .type-card:hover .type-kanji { opacity: 0.25; }
+    .type-icon { font-size: 2.5rem; display: block; margin-bottom: 0.8rem; }
+    .type-name {
+      font-family: var(--fh); font-size: 1.3rem;
+      color: var(--txt); letter-spacing: 0.12em; margin-bottom: 0.4rem;
+    }
+    .type-jp { font-family: var(--fj); font-size: 0.75rem; color: var(--txtd); margin-bottom: 0.7rem; }
+    .type-desc { font-size: 0.88rem; color: var(--txtm); line-height: 1.5; }
+
+    /* ── CTA SLIDE ── */
+    .cta-panel {
+      max-width: 700px; width: 100%;
+      text-align: center; position: relative; z-index: 2;
+      opacity: 0; transform: translateY(30px);
+      transition: all 1s cubic-bezier(0.16,1,0.3,1);
+    }
+    .cta-panel.revealed { opacity: 1; transform: none; }
+    .cta-tag {
+      font-family: var(--fm); font-size: 0.55rem;
+      letter-spacing: 0.4em; color: var(--crimson);
+      border: 1px solid var(--crimson3);
+      padding: 0.35rem 1.5rem; display: inline-block;
+      background: rgba(204,20,51,0.06); margin-bottom: 2rem;
+      text-transform: uppercase;
+    }
+    .cta-title {
+      font-family: var(--ft);
+      font-size: clamp(2rem, 6vw, 4rem);
+      background: linear-gradient(180deg, var(--txt) 0%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 1.2rem;
+      letter-spacing: 0.05em;
+    }
+    .cta-sub {
+      font-size: 1.2rem; color: var(--txtm);
+      font-style: italic; line-height: 1.8; margin-bottom: 2.5rem;
+    }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .cta-btn {
+      font-family: var(--fm); font-size: 0.62rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.9rem 2.2rem; text-decoration: none;
+      border: none; cursor: pointer; display: inline-block;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .cta-btn-p {
+      background: var(--crimson); color: #fff;
+      border: 1px solid var(--crimson);
+    }
+    .cta-btn-p:hover { background: var(--crimson2); box-shadow: 0 0 30px rgba(204,20,51,0.5); transform: translateY(-2px); }
+    .cta-btn-s {
+      background: transparent; color: var(--gold);
+      border: 1px solid var(--gold2);
+    }
+    .cta-btn-s:hover { background: rgba(200,160,50,0.12); box-shadow: 0 0 20px rgba(200,160,50,0.25); transform: translateY(-2px); }
+    .cta-ornament { margin-top: 3rem; font-size: 1.5rem; letter-spacing: 1.2rem; color: var(--gold); opacity: 0.45; }
+
+    /* ── SLIDE-IN ANIMATIONS ── */
+    .panel { opacity: 0; transform: translateY(50px); transition: opacity 0.85s cubic-bezier(0.23,1,0.32,1), transform 0.85s cubic-bezier(0.23,1,0.32,1); }
+    .panel.revealed { opacity: 1; transform: none; }
+
+    /* ── CLICK PARTICLES ── */
+    .cpx {
+      position: fixed; width: 3px; height: 3px;
+      border-radius: 50%; background: var(--crimson2);
+      pointer-events: none; z-index: 9999;
+      animation: cpxSlash var(--dur, 0.7s) ease-out forwards;
+      box-shadow: 0 0 6px var(--crimson2);
+    }
+    @keyframes cpxSlash {
+      0% { opacity: 0.9; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx),var(--ty)) scale(0); }
+    }
+
+    /* ── EMBER ── */
+    .ember {
+      position: fixed; pointer-events: none; z-index: 2;
+      width: 3px; height: 3px; border-radius: 50%;
+      background: #ff6b00;
+      box-shadow: 0 0 8px #ff6b00, 0 0 16px #ff4500;
+      animation: emberFloat var(--ed, 5s) ease-in infinite;
+    }
+    @keyframes emberFloat {
+      0% { transform: translateY(0) translateX(0); opacity: 0.7; }
+      50% { opacity: 0.25; }
+      100% { transform: translateY(-350px) translateX(60px); opacity: 0; }
+    }
+
+    /* ══════════════════════════════
+       QUOTE BAR
+    ══════════════════════════════ */
+    .quote-bar {
+      max-width: 680px; margin: 0 auto;
+      text-align: center;
+      padding: 2.5rem 2rem;
+      border-left: 3px solid var(--crimson);
+      border-right: 3px solid var(--crimson);
+      position: relative;
+    }
+    .quote-bar::before, .quote-bar::after {
+      content: '⚔';
+      position: absolute; top: 50%; font-size: 1rem;
+      color: var(--gold); opacity: 0.6;
+    }
+    .quote-bar::before { left: -1.2rem; transform: translateY(-50%); }
+    .quote-bar::after { right: -1.2rem; transform: translateY(-50%); }
+    .quote-text {
+      font-size: 1.4rem; font-style: italic;
+      color: var(--txtm); line-height: 1.8; margin-bottom: 0.8rem;
+    }
+    .quote-text strong { color: var(--gold); font-style: normal; }
+    .quote-src {
+      font-family: var(--fm); font-size: 0.55rem;
+      letter-spacing: 0.3em; color: var(--crimson);
+      text-transform: uppercase;
+    }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4, .grid-5, .type-showcase { grid-template-columns: 1fr; }
+      .panel { padding: 1.5rem; }
+      .nav-dots { display: none; }
+      .kb-hint { display: none; }
+    }
+    @media (max-width: 500px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .cta-btns { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvases -->
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="rainCanvas"></canvas>
+  <div class="vignette"></div>
+  <div id="pbar"></div>
+
+  <!-- Nav Dots -->
+  <div class="nav-dots" id="navDots"></div>
+
+  <!-- Keyboard Hint -->
+  <div class="kb-hint">
+    <span><kbd>1</kbd>–<kbd>9</kbd> jump to slide</span>
+    <span>·</span>
+    <span><kbd>J</kbd> / <kbd>↓</kbd> next</span>
+    <span>·</span>
+    <span><kbd>K</kbd> / <kbd>↑</kbd> prev</span>
+    <span>·</span>
+    <span><kbd>G</kbd> top</span>
+  </div>
+
+  <!-- ══════════════ SLIDES ══════════════ -->
+  <div class="slides" id="slides">
+
+    <!-- SLIDE 1 — HERO -->
+    <section class="slide" id="s1" data-label="TITLE">
+      <div class="s1-bg-kanji">武</div>
+      <div class="s1-moon"></div>
+      <div class="s1-content">
+        <span class="s1-eyebrow">✦ Curated · Interactive · Aesthetic ✦</span>
+        <h1 class="s1-title">AniManga List</h1>
+        <div class="s1-year">2025 — 26</div>
+        <div class="s1-jp">個人アーカイブ · 鑑賞履歴 · 完全版</div>
+        <p class="s1-sub">A Personal Archive of Anime, Manga &amp; Manhwa</p>
+        <div class="s1-divider">⚔ ✦ 〰 ◆ ✦ ⚔</div>
+        <div class="s1-scroll">
+          <span class="s1-scroll-txt">SCROLL</span>
+          <div class="s1-scroll-line"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2 — WHAT IS IT -->
+    <section class="slide" id="s2" data-label="ABOUT">
+      <div class="panel">
+        <span class="sect-eyebrow">// the archive</span>
+        <h2 class="sect-title">What Is AniManga List?</h2>
+        <div class="grid-2">
+          <div class="fcard">
+            <span class="fcard-icon">📁</span>
+            <h3>Personal Archive</h3>
+            <p>Track every anime, manga, and manhwa discovered — curated by hand, never generated by algorithms.</p>
+          </div>
+          <div class="fcard">
+            <span class="fcard-icon">🔍</span>
+            <h3>Intelligent Search</h3>
+            <p>Instantly find anything across your collection with real-time filtering and smart tag matching.</p>
+          </div>
+          <div class="fcard">
+            <span class="fcard-icon">🏷️</span>
+            <h3>Smart Filters</h3>
+            <p>Filter by genre, status, rating, and personal preferences to surface exactly what you need.</p>
+          </div>
+          <div class="fcard">
+            <span class="fcard-icon">⭐</span>
+            <h3>Favorites Panel</h3>
+            <p>Heart your most beloved series and export a formatted list to share with anyone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3 — COLLECTION TYPES -->
+    <section class="slide" id="s3" data-label="TYPES">
+      <div class="panel">
+        <span class="sect-eyebrow">// the collection</span>
+        <h2 class="sect-title">Three Worlds. One Archive.</h2>
+        <div class="type-showcase">
+          <div class="type-card anime">
+            <span class="type-kanji">映</span>
+            <span class="type-icon">🎬</span>
+            <div class="type-name">ANIME</div>
+            <div class="type-jp">アニメ</div>
+            <p class="type-desc">Episodes, movies, OVAs — spanning 1968 to 2025. From Ghibli masterpieces to seasonal bangers.</p>
+          </div>
+          <div class="type-card manga">
+            <span class="type-kanji">書</span>
+            <span class="type-icon">📚</span>
+            <div class="type-name">MANGA</div>
+            <div class="type-jp">漫画</div>
+            <p class="type-desc">Chapters, volumes, one-shots — Berserk to Dandadan. The manga medium at its absolute finest.</p>
+          </div>
+          <div class="type-card manhwa">
+            <span class="type-kanji">卷</span>
+            <span class="type-icon">📱</span>
+            <div class="type-name">MANHWA</div>
+            <div class="type-jp">만화</div>
+            <p class="type-desc">Korean webtoons — Tower of God to Solo Leveling. A medium ascending to legendary status.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4 — AESTHETIC -->
+    <section class="slide" id="s4" data-label="DESIGN">
+      <div class="panel">
+        <span class="sect-eyebrow">// visual identity</span>
+        <h2 class="sect-title">Aesthetic Mastery</h2>
+        <ul class="flist" id="flist1">
+          <li><span class="flist-icon">⚔</span><span><strong>Night Dojo Theme</strong> — Dark mode born from samurai philosophy. Every pixel bleeds ink.</span></li>
+          <li><span class="flist-icon">✦</span><span><strong>Crimson &amp; Gold</strong> — A commanding palette built on blood and honour.</span></li>
+          <li><span class="flist-icon">〰</span><span><strong>Dual Typography</strong> — Cinzel Decorative for display, Cormorant Garamond for body, Noto Serif JP for soul.</span></li>
+          <li><span class="flist-icon">🌅</span><span><strong>Dawn / Night Toggle</strong> — Switch between dark samurai night and warm parchment day mode.</span></li>
+          <li><span class="flist-icon">◆</span><span><strong>3D Katana Scene</strong> — A rotating three.js katana floats in the background with crimson particle dust.</span></li>
+          <li><span class="flist-icon">🈳</span><span><strong>Kanji Fog</strong> — Japanese characters drift through the background like ghosts in smoke.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SLIDE 5 — INTERACTIONS -->
+    <section class="slide" id="s5" data-label="INTERACT">
+      <div class="panel">
+        <span class="sect-eyebrow">// the experience</span>
+        <h2 class="sect-title">Interactive Experience</h2>
+        <div class="grid-4" style="margin-bottom: 2rem;">
+          <div class="fcard">
+            <span class="fcard-icon">🎵</span>
+            <h3>Sound Engine</h3>
+            <p>Web Audio API — sword swings, click tones, heart chimes.</p>
+          </div>
+          <div class="fcard">
+            <span class="fcard-icon">⭐</span>
+            <h3>Favorites</h3>
+            <p>Heart any entry. Export your list as formatted text instantly.</p>
+          </div>
+          <div class="fcard">
+            <span class="fcard-icon">📊</span>
+            <h3>Progress Tracker</h3>
+            <p>Mark each series: Want · Watching · Completed · Dropped.</p>
+          </div>
+          <div class="fcard">
+            <span class="fcard-icon">⚡</span>
+            <h3>Random Pick</h3>
+            <p>Can't decide? Let the archive choose for you — filtered or all.</p>
+          </div>
+        </div>
+        <ul class="flist" id="flist2">
+          <li><span class="flist-icon">⌨</span><span><strong>Keyboard Shortcuts</strong> — 1/2/3 to jump sections, F for favorites, D for dojo mode, M for sound.</span></li>
+          <li><span class="flist-icon">🎯</span><span><strong>Real-Time Search</strong> — Filter by title, description, or tag as you type with zero lag.</span></li>
+          <li><span class="flist-icon">🔗</span><span><strong>Direct Links</strong> — Every card links to MAL, AnimePahe, and Comick.io.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SLIDE 6 — VISUAL FX -->
+    <section class="slide" id="s6" data-label="FX">
+      <div class="panel">
+        <span class="sect-eyebrow">// living details</span>
+        <h2 class="sect-title">Visual Detailing</h2>
+        <div class="grid-2">
+          <ul class="flist" id="flist3">
+            <li><span class="flist-icon">🌧</span><span><strong>Rain Overlay</strong> — Golden rain traces fall across the screen in night mode.</span></li>
+            <li><span class="flist-icon">🔥</span><span><strong>Ember Particles</strong> — Glowing embers drift upward, warm and alive.</span></li>
+            <li><span class="flist-icon">💥</span><span><strong>Click Particles</strong> — Every click scatters crimson sparks outward.</span></li>
+          </ul>
+          <ul class="flist" id="flist4">
+            <li><span class="flist-icon">🖱</span><span><strong>Card Tilt</strong> — 3D perspective tilt on hover with shimmering light pass.</span></li>
+            <li><span class="flist-icon">⚔</span><span><strong>Progress Bar</strong> — Scroll indicator ends with a glowing ⚔ sword emoji.</span></li>
+            <li><span class="flist-icon">🎬</span><span><strong>Loader Sequence</strong> — Ink-blot opening cinematic on every fresh load.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7 — STATS -->
+    <section class="slide" id="s7" data-label="STATS">
+      <div class="panel">
+        <span class="sect-eyebrow">// the numbers</span>
+        <h2 class="sect-title">The Archive</h2>
+        <div class="grid-3">
+          <div class="stat-card">
+            <span class="stat-num" data-target="100" id="ctr1">0</span>
+            <span class="stat-label">Anime Entries</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-target="100" id="ctr2">0</span>
+            <span class="stat-label">Manga Entries</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-target="35" id="ctr3">0</span>
+            <span class="stat-label">Manhwa Entries</span>
+          </div>
+        </div>
+        <div style="margin-top:2.5rem;">
+          <div class="quote-bar">
+            <p class="quote-text">"<strong>Perceive that which cannot be seen with the eye.</strong>"</p>
+            <p class="quote-src">— Miyamoto Musashi, 五輪書</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8 — BUILT WITH -->
+    <section class="slide" id="s8" data-label="TECH">
+      <div class="panel">
+        <span class="sect-eyebrow">// built with excellence</span>
+        <h2 class="sect-title">Zero Frameworks. Pure Craft.</h2>
+        <p style="color:var(--txtm);font-size:1.1rem;margin-bottom:0.5rem;">Vanilla HTML/CSS/JS — no bundlers, no frameworks, no build step. Split across <strong style="color:var(--txt)">index.html</strong>, <strong style="color:var(--txt)">Brief_Intro.html</strong>, <strong style="color:var(--txt)">css/style.css</strong>, <strong style="color:var(--txt)">js/app.js</strong> and <strong style="color:var(--txt)">js/data.js</strong>. Just craft.</p>
+        <div class="tech-grid">
+          <div class="tech-pill">HTML5</div>
+          <div class="tech-pill">CSS3 Custom Properties</div>
+          <div class="tech-pill">Vanilla JavaScript</div>
+          <div class="tech-pill">Three.js r128</div>
+          <div class="tech-pill">Canvas API</div>
+          <div class="tech-pill">Web Audio API</div>
+          <div class="tech-pill">Intersection Observer</div>
+          <div class="tech-pill">LocalStorage Persistence</div>
+          <div class="tech-pill">Responsive Layout</div>
+          <div class="tech-pill">CSS Scroll Snap</div>
+          <div class="tech-pill">Google Fonts</div>
+          <div class="tech-pill">CSS Animations</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9 — CTA / FINAL -->
+    <section class="slide" id="s9" data-label="ENTER">
+      <div class="cta-panel" id="ctaPanel">
+        <div class="cta-tag">⚔ Personal Curated Archive · 2025-26 ⚔</div>
+        <h2 class="cta-title">Enter the Archive</h2>
+        <p class="cta-sub">
+          Every entry curated by hand. Every link verified.<br>
+          Built in <strong style="color:var(--gold)">Assam, India</strong> — with obsession, craft, and Musashi's discipline.
+        </p>
+        <div class="cta-btns">
+          <a href="index.html" class="cta-btn cta-btn-p">⚔ Open Archive</a>
+          <a href="index.html#anime" class="cta-btn cta-btn-s">Explore Anime ✦</a>
+        </div>
+        <div class="cta-ornament">⚔ ✦ 〰 ◆ 〰 ✦ ⚔</div>
+        <p style="margin-top:2rem;font-family:var(--fj);font-size:1.8rem;color:var(--crimson);opacity:0.7;letter-spacing:0.2em;">ガウラブ</p>
+      </div>
+    </section>
+
+  </div><!-- /slides -->
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+  // ── THREE.JS BACKGROUND ──
+  (function(){
+    var c = document.getElementById('bgCanvas');
+    if(!c || !window.THREE) return;
+    var renderer = new THREE.WebGLRenderer({canvas:c,alpha:true,antialias:true});
+    renderer.setSize(innerWidth,innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    var scene = new THREE.Scene();
+    var cam = new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,100);
+    cam.position.z = 8;
+    // Katana
+    var blade = new THREE.Mesh(new THREE.BoxGeometry(0.06,3.2,0.04),new THREE.MeshStandardMaterial({color:0xbbccdd,metalness:0.92,roughness:0.15}));
+    var tsuba = new THREE.Mesh(new THREE.CylinderGeometry(0.26,0.26,0.06,16),new THREE.MeshStandardMaterial({color:0xc8a032,metalness:0.85,roughness:0.25}));
+    tsuba.position.y=-1.5;
+    var handle = new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.09,1.3,8),new THREE.MeshStandardMaterial({color:0x1a0808,metalness:0.1,roughness:0.75}));
+    handle.position.y=-2.2;
+    var katana = new THREE.Group();
+    katana.add(blade);katana.add(tsuba);katana.add(handle);
+    katana.rotation.x=0.25;katana.rotation.z=-0.18;
+    scene.add(katana);
+    // Particles
+    var pg = new THREE.BufferGeometry();
+    var pa = new Float32Array(100*3);
+    for(var i=0;i<300;i++) pa[i]=(Math.random()-0.5)*12;
+    pg.setAttribute('position',new THREE.BufferAttribute(pa,3));
+    var pm = new THREE.PointsMaterial({size:0.025,color:0xcc1433,transparent:true,opacity:0.4,blending:THREE.AdditiveBlending});
+    scene.add(new THREE.Points(pg,pm));
+    // Lights
+    scene.add(new THREE.AmbientLight(0x331111,0.5));
+    var p1=new THREE.PointLight(0xcc1433,1.4,15);p1.position.set(3,2,4);scene.add(p1);
+    var p2=new THREE.PointLight(0xc8a032,0.5,10);p2.position.set(-3,-1,3);scene.add(p2);
+    var t=0;
+    (function loop(){
+      requestAnimationFrame(loop); t+=0.01;
+      katana.rotation.y+=0.003;
+      katana.position.y=0.3+Math.sin(t)*0.25;
+      p1.intensity=1.4+Math.sin(t*2)*0.4;
+      renderer.render(scene,cam);
+    })();
+    addEventListener('resize',function(){
+      renderer.setSize(innerWidth,innerHeight);
+      cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
+    });
+    // mouse parallax
+    addEventListener('mousemove',function(e){
+      katana.rotation.x=0.25+(e.clientY/innerHeight-0.5)*0.15;
+    });
+  })();
+
+  // ── RAIN ──
+  (function(){
+    var c=document.getElementById('rainCanvas');
+    if(!c) return;
+    var ctx=c.getContext('2d');
+    c.width=innerWidth;c.height=innerHeight;
+    var drops=[];
+    for(var i=0;i<130;i++) drops.push({x:Math.random()*c.width,y:Math.random()*c.height,l:8+Math.random()*16,s:4+Math.random()*9,o:0.04+Math.random()*0.14});
+    function draw(){
+      ctx.clearRect(0,0,c.width,c.height);
+      ctx.lineWidth=0.6;
+      drops.forEach(function(d){
+        ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x-1,d.y+d.l);
+        ctx.strokeStyle='rgba(200,160,50,'+d.o+')';ctx.stroke();
+        d.y+=d.s;if(d.y>c.height){d.y=-d.l;d.x=Math.random()*c.width}
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+    addEventListener('resize',function(){c.width=innerWidth;c.height=innerHeight});
+  })();
+
+  // ── NAV DOTS ──
+  var slides = document.querySelectorAll('.slide');
+  var slidesEl = document.getElementById('slides');
+  var dotsEl = document.getElementById('navDots');
+  slides.forEach(function(s,i){
+    var d=document.createElement('button');
+    d.className='ndot'+(i===0?' active':'');
+    d.setAttribute('data-label',s.getAttribute('data-label')||'');
+    d.onclick=function(){s.scrollIntoView({behavior:'smooth'})};
+    dotsEl.appendChild(d);
+  });
+
+  // ── PROGRESS BAR + SCROLL REVEAL ──
+  slidesEl.addEventListener('scroll',function(){
+    var st=slidesEl.scrollTop,sh=slidesEl.scrollHeight-slidesEl.clientHeight;
+    document.getElementById('pbar').style.width=(st/sh*100)+'%';
+    reveal();updateDots();
+  });
+
+  function reveal(){
+    document.querySelectorAll('.panel,.cta-panel').forEach(function(p){
+      if(p.getBoundingClientRect().top<innerHeight*0.88) p.classList.add('revealed');
+    });
+    // feature lists
+    [['#flist1','#flist2','#flist3','#flist4']].flat().forEach(function(sel){
+      var ul=document.querySelector(sel);
+      if(!ul) return;
+      if(ul.getBoundingClientRect().top<innerHeight*0.85){
+        ul.querySelectorAll('li').forEach(function(li,i){
+          setTimeout(function(){li.classList.add('visible')},i*120);
+        });
+      }
+    });
+    // counters
+    document.querySelectorAll('[data-target]').forEach(function(el){
+      if(el.dataset.counted) return;
+      if(el.getBoundingClientRect().top<innerHeight*0.85){
+        el.dataset.counted=1;
+        var target=parseInt(el.dataset.target,10),start=performance.now(),dur=1800;
+        (function tick(now){
+          var p=Math.min((now-start)/dur,1),ease=1-Math.pow(1-p,3);
+          el.textContent=Math.floor(ease*target)+(p===1?'+':'');
+          if(p<1) requestAnimationFrame(tick);
+        })(start);
+      }
+    });
+  }
+
+  function updateDots(){
+    var dots=dotsEl.querySelectorAll('.ndot');
+    var active=0;
+    slides.forEach(function(s,i){
+      if(s.getBoundingClientRect().top<=innerHeight/2) active=i;
+    });
+    dots.forEach(function(d,i){d.classList.toggle('active',i===active)});
+  }
+
+  // ── CLICK PARTICLES ──
+  document.addEventListener('click',function(e){
+    for(var i=0;i<12;i++){
+      var p=document.createElement('div');p.className='cpx';
+      var ang=(Math.PI*2/12)*i,sp=30+Math.random()*60;
+      p.style.setProperty('--tx',Math.cos(ang)*sp+'px');
+      p.style.setProperty('--ty',Math.sin(ang)*sp+'px');
+      p.style.setProperty('--dur',(Math.random()*0.5+0.5)+'s');
+      p.style.left=e.clientX+'px';p.style.top=e.clientY+'px';
+      document.body.appendChild(p);
+      setTimeout(function(){p.remove()},900);
+    }
+    playClick();
+  });
+
+  // ── EMBERS ──
+  function spawnEmber(){
+    var e=document.createElement('div');e.className='ember';
+    e.style.left=Math.random()*100+'%';e.style.bottom=Math.random()*15+'%';
+    e.style.setProperty('--ed',(2+Math.random()*5)+'s');
+    document.body.appendChild(e);
+    e.addEventListener('animationend',function(){e.remove()});
+  }
+  setInterval(spawnEmber,1200);
+  for(var i=0;i<8;i++) setTimeout(spawnEmber,i*300);
+
+  // ── SOUND ──
+  var ctx2=null;
+  function initAudio(){if(!ctx2)ctx2=new(window.AudioContext||window.webkitAudioContext)();}
+  function playClick(){
+    if(!ctx2) return;
+    var o=ctx2.createOscillator(),g=ctx2.createGain();
+    o.type='sine';o.frequency.setValueAtTime(700,ctx2.currentTime);
+    o.frequency.exponentialRampToValueAtTime(200,ctx2.currentTime+0.12);
+    g.gain.setValueAtTime(0.06,ctx2.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx2.currentTime+0.15);
+    o.connect(g);g.connect(ctx2.destination);
+    o.start();o.stop(ctx2.currentTime+0.15);
+  }
+  document.addEventListener('click',initAudio,{once:true});
+
+  // ── KEYBOARD ──
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+    var cur=Math.round(slidesEl.scrollTop/innerHeight);
+
+    // Number keys 1-9 → jump directly to that slide
+    var num=parseInt(e.key,10);
+    if(num>=1&&num<=9){
+      var idx=num-1;
+      if(idx<slides.length){
+        e.preventDefault();
+        slides[idx].scrollIntoView({behavior:'smooth'});
+        return;
+      }
+    }
+
+    if(e.key==='j'||e.key==='ArrowDown'){
+      e.preventDefault();
+      if(cur<slides.length-1) slides[cur+1].scrollIntoView({behavior:'smooth'});
+    }
+    if(e.key==='k'||e.key==='ArrowUp'){
+      e.preventDefault();
+      if(cur>0) slides[cur-1].scrollIntoView({behavior:'smooth'});
+    }
+    if(e.key==='g') slides[0].scrollIntoView({behavior:'smooth'});
+  });
+
+  // ── REVEAL ON LOAD ──
+  setTimeout(reveal,400);
+
+  console.log('%c⚔ AniManga List 2025–26 · Brief Intro · Gaurav', 'color:#cc1433;font-size:14px;font-weight:bold');
+  console.log('%c⌨ 1-9 jump to slide · J/↓ next · K/↑ prev · G top', 'color:#c8a032;font-size:11px');
+  </script>
+</body>
+</html>

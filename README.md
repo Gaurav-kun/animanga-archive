@@ -8,8 +8,9 @@ A beautifully crafted personal archive for tracking **Anime**, **Manga**, and **
 
 ## 🌐 Live Demo
 
-🔗 **[View Live Site → ](https://gaurav-kun.github.io/animanga-archive/)**
-🔗 **[View Live Description → ](https://gaurav-kun.github.io/animanga-archive/Brief_Intro.html)**
+<a href="https://gaurav-kun.github.io/animanga-archive/">🔗 View Live Site →</a>
+<br>
+<a href="https://gaurav-kun.github.io/animanga-archive/Brief_Intro.html">🔗 View Live Description →</a>
 
 
 ---
